@@ -1,0 +1,11 @@
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '9.3'
+#use_frameworks!
+target 'BXTsuishenting' do
+pod 'SDWebImage'
+pod 'MJExtension'
+pod 'AFNetworking'
+pod 'DACircularProgress'
+pod 'Masonry'
+
+end
