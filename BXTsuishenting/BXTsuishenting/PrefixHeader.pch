@@ -1,0 +1,29 @@
+//
+//  PrefixHeader.pch
+//  BXTsuishenting
+//
+//  Created by cbg on 16/11/29.
+//  Copyright © 2016年 cbg. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#import "UIView+CBGExtension.h"
+#import "UIImage+CBGExtension.h"
+
+
+#define CBGNoteCenter           [NSNotificationCenter defaultCenter]
+
+
+#define CBGGreenColor           [UIColor colorWithRed:(137)/255.0 green:(203)/255.0 blue:(149)/255.0 alpha:1.0]
+#define CBGRGBColor(r, g, b)    [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]
+
+#define CBGScreenWidth          [UIScreen mainScreen].bounds.size.width
+#define CBGScreenHeight         [UIScreen mainScreen].bounds.size.height
+
+
+#endif /* PrefixHeader_pch */
