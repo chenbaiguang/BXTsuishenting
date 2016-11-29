@@ -116,6 +116,7 @@
 		3ADDF55A1DED899200EDFC97 /* BXTsuishenting */ = {
 			isa = PBXGroup;
 			children = (
+				3ADDF58E1DED98C700EDFC97 /* Classes */,
 				3ADDF55E1DED899200EDFC97 /* AppDelegate.h */,
 				3ADDF55F1DED899200EDFC97 /* AppDelegate.m */,
 				3ADDF5611DED899200EDFC97 /* ViewController.h */,
@@ -153,6 +154,85 @@
 				3ADDF5821DED899200EDFC97 /* Info.plist */,
 			);
 			path = BXTsuishentingUITests;
+			sourceTree = "<group>";
+		};
+		3ADDF58E1DED98C700EDFC97 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				3ADDF5971DED995A00EDFC97 /* Tool */,
+				3ADDF5931DED98C700EDFC97 /* Player-播放器 */,
+				3ADDF58F1DED98C700EDFC97 /* Other-其他 */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		3ADDF58F1DED98C700EDFC97 /* Other-其他 */ = {
+			isa = PBXGroup;
+			children = (
+				3ADDF5901DED98C700EDFC97 /* Category */,
+				3ADDF5911DED98C700EDFC97 /* Controller */,
+				3ADDF5921DED98C700EDFC97 /* View */,
+			);
+			path = "Other-其他";
+			sourceTree = "<group>";
+		};
+		3ADDF5901DED98C700EDFC97 /* Category */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Category;
+			sourceTree = "<group>";
+		};
+		3ADDF5911DED98C700EDFC97 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		3ADDF5921DED98C700EDFC97 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		3ADDF5931DED98C700EDFC97 /* Player-播放器 */ = {
+			isa = PBXGroup;
+			children = (
+				3ADDF5941DED98C700EDFC97 /* Controller */,
+				3ADDF5951DED98C700EDFC97 /* Model */,
+				3ADDF5961DED98C700EDFC97 /* View */,
+			);
+			path = "Player-播放器";
+			sourceTree = "<group>";
+		};
+		3ADDF5941DED98C700EDFC97 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		3ADDF5951DED98C700EDFC97 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		3ADDF5961DED98C700EDFC97 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		3ADDF5971DED995A00EDFC97 /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Tool;
 			sourceTree = "<group>";
 		};
 		AD9632409F101A3E5566C51E /* Pods */ = {
