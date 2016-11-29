@@ -7,9 +7,10 @@
 //
 
 #import "ViewController.h"
+#import "CBGPlayerViewController.h"
+
 
 @interface ViewController ()
-
 @end
 
 
@@ -20,8 +21,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
+    CBGPlayerViewController *playerViewController = [[CBGPlayerViewController alloc] init];
     
-    self.view.backgroundColor = CBGGreenColor;
+    [self.view addSubview:playerViewController.view];
+    [self addChildViewController:playerViewController];
 }
 
 - (void)didReceiveMemoryWarning {
