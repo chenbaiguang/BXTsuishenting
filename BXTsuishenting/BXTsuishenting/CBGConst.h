@@ -8,3 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+
+
+/** 6S 屏幕宽度 */
+UIKIT_EXTERN CGFloat const CBG6sWidth;
+
+/** 6S 屏幕高度 */
+UIKIT_EXTERN CGFloat const CBG6sHeight;
+

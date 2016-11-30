@@ -18,6 +18,7 @@
 #define MAS_SHORTHAND_GLOBALS
 
 #import <Masonry.h>
+#import "CBGConst.h"
 #import "UIView+CBGExtension.h"
 #import "UIImage+CBGExtension.h"
 
@@ -28,8 +29,13 @@
 #define CBGGreenColor           [UIColor colorWithRed:(137)/255.0 green:(203)/255.0 blue:(149)/255.0 alpha:1.0]
 #define CBGRGBColor(r, g, b)    [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]
 
+#define CBGAppStatusBarHeight   [UIApplication sharedApplication].statusBarFrame.size.height
+
 #define CBGScreenWidth          [UIScreen mainScreen].bounds.size.width
 #define CBGScreenHeight         [UIScreen mainScreen].bounds.size.height
+
+#define kScreenWidthScale     CBGScreenWidth  / CBG6sWidth
+#define kScreenHeightScale    CBGScreenHeight / CBG6sHeight
 
 
 #endif /* PrefixHeader_pch */
