@@ -15,3 +15,6 @@
 
 /** 6S Plus 屏幕高度 */
  CGFloat const CBG6sHeight = 667;
+
+/** 圆形进度条大小 */
+ CGFloat const CBGProgressWidth = 180;

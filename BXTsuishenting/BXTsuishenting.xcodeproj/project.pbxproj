@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		099B0FEE39EFEDE14444110E /* libPods-BXTsuishenting.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D12B966D5179F3985BEC7E96 /* libPods-BXTsuishenting.a */; };
+		3A28AD231E607488008D21A7 /* CBGLrcTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A28AD221E607488008D21A7 /* CBGLrcTool.m */; };
+		3A28AD261E6074F7008D21A7 /* CBGLrcLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A28AD251E6074F7008D21A7 /* CBGLrcLabel.m */; };
+		3A28AD291E6075BC008D21A7 /* CBGLrcline.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A28AD281E6075BC008D21A7 /* CBGLrcline.m */; };
 		3ADDF55D1DED899200EDFC97 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADDF55C1DED899200EDFC97 /* main.m */; };
 		3ADDF5601DED899200EDFC97 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADDF55F1DED899200EDFC97 /* AppDelegate.m */; };
 		3ADDF5631DED899200EDFC97 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADDF5621DED899200EDFC97 /* ViewController.m */; };
@@ -24,6 +27,11 @@
 		3ADDF5F01DEDBF2200EDFC97 /* CBGMusicTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADDF5EF1DEDBF2200EDFC97 /* CBGMusicTool.m */; };
 		3ADDF5F31DEDBF3A00EDFC97 /* CBGMusic.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADDF5F21DEDBF3900EDFC97 /* CBGMusic.m */; };
 		3ADDF5F61DEDBF6E00EDFC97 /* CBGPlayMusicTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADDF5F51DEDBF6E00EDFC97 /* CBGPlayMusicTool.m */; };
+		3AE4BADF1E52D5120093A371 /* CBGAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE4BADE1E52D5120093A371 /* CBGAnimationView.m */; };
+		3AE4BAE41E52E9830093A371 /* CBGLoveMusicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE4BAE11E52E9830093A371 /* CBGLoveMusicCell.m */; };
+		3AE4BAE51E52E9830093A371 /* CBGLoveMusicView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE4BAE31E52E9830093A371 /* CBGLoveMusicView.m */; };
+		3AE4BAE81E52F5110093A371 /* CBGLrcCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE4BAE71E52F5110093A371 /* CBGLrcCell.m */; };
+		3AF6B3071E4C345C00793430 /* CBGLrcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AF6B3061E4C345C00793430 /* CBGLrcView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +52,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3A28AD211E607488008D21A7 /* CBGLrcTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBGLrcTool.h; sourceTree = "<group>"; };
+		3A28AD221E607488008D21A7 /* CBGLrcTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBGLrcTool.m; sourceTree = "<group>"; };
+		3A28AD241E6074F7008D21A7 /* CBGLrcLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBGLrcLabel.h; sourceTree = "<group>"; };
+		3A28AD251E6074F7008D21A7 /* CBGLrcLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBGLrcLabel.m; sourceTree = "<group>"; };
+		3A28AD271E6075BC008D21A7 /* CBGLrcline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBGLrcline.h; sourceTree = "<group>"; };
+		3A28AD281E6075BC008D21A7 /* CBGLrcline.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBGLrcline.m; sourceTree = "<group>"; };
 		3ADDF5581DED899200EDFC97 /* BXTsuishenting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BXTsuishenting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3ADDF55C1DED899200EDFC97 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		3ADDF55E1DED899200EDFC97 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -76,6 +90,16 @@
 		3ADDF5F21DEDBF3900EDFC97 /* CBGMusic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBGMusic.m; sourceTree = "<group>"; };
 		3ADDF5F41DEDBF6E00EDFC97 /* CBGPlayMusicTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBGPlayMusicTool.h; sourceTree = "<group>"; };
 		3ADDF5F51DEDBF6E00EDFC97 /* CBGPlayMusicTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBGPlayMusicTool.m; sourceTree = "<group>"; };
+		3AE4BADD1E52D5120093A371 /* CBGAnimationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBGAnimationView.h; sourceTree = "<group>"; };
+		3AE4BADE1E52D5120093A371 /* CBGAnimationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBGAnimationView.m; sourceTree = "<group>"; };
+		3AE4BAE01E52E9830093A371 /* CBGLoveMusicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBGLoveMusicCell.h; sourceTree = "<group>"; };
+		3AE4BAE11E52E9830093A371 /* CBGLoveMusicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBGLoveMusicCell.m; sourceTree = "<group>"; };
+		3AE4BAE21E52E9830093A371 /* CBGLoveMusicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBGLoveMusicView.h; sourceTree = "<group>"; };
+		3AE4BAE31E52E9830093A371 /* CBGLoveMusicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBGLoveMusicView.m; sourceTree = "<group>"; };
+		3AE4BAE61E52F5110093A371 /* CBGLrcCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBGLrcCell.h; sourceTree = "<group>"; };
+		3AE4BAE71E52F5110093A371 /* CBGLrcCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBGLrcCell.m; sourceTree = "<group>"; };
+		3AF6B3051E4C345C00793430 /* CBGLrcView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBGLrcView.h; sourceTree = "<group>"; };
+		3AF6B3061E4C345C00793430 /* CBGLrcView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBGLrcView.m; sourceTree = "<group>"; };
 		9E851F62DB879C5A699B1824 /* Pods-BXTsuishenting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BXTsuishenting.release.xcconfig"; path = "Pods/Target Support Files/Pods-BXTsuishenting/Pods-BXTsuishenting.release.xcconfig"; sourceTree = "<group>"; };
 		D12B966D5179F3985BEC7E96 /* libPods-BXTsuishenting.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BXTsuishenting.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F7CEF63DB00A8BFC19F6D046 /* Pods-BXTsuishenting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BXTsuishenting.debug.xcconfig"; path = "Pods/Target Support Files/Pods-BXTsuishenting/Pods-BXTsuishenting.debug.xcconfig"; sourceTree = "<group>"; };
@@ -253,6 +277,8 @@
 			children = (
 				3ADDF5F11DEDBF3900EDFC97 /* CBGMusic.h */,
 				3ADDF5F21DEDBF3900EDFC97 /* CBGMusic.m */,
+				3A28AD271E6075BC008D21A7 /* CBGLrcline.h */,
+				3A28AD281E6075BC008D21A7 /* CBGLrcline.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -260,6 +286,18 @@
 		3ADDF5961DED98C700EDFC97 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				3AE4BADD1E52D5120093A371 /* CBGAnimationView.h */,
+				3AE4BADE1E52D5120093A371 /* CBGAnimationView.m */,
+				3AF6B3051E4C345C00793430 /* CBGLrcView.h */,
+				3AF6B3061E4C345C00793430 /* CBGLrcView.m */,
+				3AE4BAE61E52F5110093A371 /* CBGLrcCell.h */,
+				3AE4BAE71E52F5110093A371 /* CBGLrcCell.m */,
+				3A28AD241E6074F7008D21A7 /* CBGLrcLabel.h */,
+				3A28AD251E6074F7008D21A7 /* CBGLrcLabel.m */,
+				3AE4BAE21E52E9830093A371 /* CBGLoveMusicView.h */,
+				3AE4BAE31E52E9830093A371 /* CBGLoveMusicView.m */,
+				3AE4BAE01E52E9830093A371 /* CBGLoveMusicCell.h */,
+				3AE4BAE11E52E9830093A371 /* CBGLoveMusicCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -271,6 +309,8 @@
 				3ADDF5F51DEDBF6E00EDFC97 /* CBGPlayMusicTool.m */,
 				3ADDF5EE1DEDBF2200EDFC97 /* CBGMusicTool.h */,
 				3ADDF5EF1DEDBF2200EDFC97 /* CBGMusicTool.m */,
+				3A28AD211E607488008D21A7 /* CBGLrcTool.h */,
+				3A28AD221E607488008D21A7 /* CBGLrcTool.m */,
 			);
 			name = "Tool-工具类";
 			path = Tool;
@@ -356,7 +396,6 @@
 				TargetAttributes = {
 					3ADDF5571DED899200EDFC97 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 86HJJP6L34;
 					};
 					3ADDF5701DED899200EDFC97 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -471,16 +510,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AE4BADF1E52D5120093A371 /* CBGAnimationView.m in Sources */,
 				3ADDF5631DED899200EDFC97 /* ViewController.m in Sources */,
+				3A28AD231E607488008D21A7 /* CBGLrcTool.m in Sources */,
 				3ADDF5EB1DEDBD1F00EDFC97 /* CBGPlayerViewController.m in Sources */,
+				3A28AD291E6075BC008D21A7 /* CBGLrcline.m in Sources */,
 				3ADDF5F61DEDBF6E00EDFC97 /* CBGPlayMusicTool.m in Sources */,
+				3AE4BAE81E52F5110093A371 /* CBGLrcCell.m in Sources */,
 				3ADDF59E1DED9AC500EDFC97 /* UIView+CBGExtension.m in Sources */,
+				3AF6B3071E4C345C00793430 /* CBGLrcView.m in Sources */,
 				3ADDF5601DED899200EDFC97 /* AppDelegate.m in Sources */,
+				3AE4BAE51E52E9830093A371 /* CBGLoveMusicView.m in Sources */,
 				3ADDF5F01DEDBF2200EDFC97 /* CBGMusicTool.m in Sources */,
 				3ADDF5A11DEDA21900EDFC97 /* UIImage+CBGExtension.m in Sources */,
 				3ADDF5A81DEDA2E200EDFC97 /* CBGConst.m in Sources */,
+				3AE4BAE41E52E9830093A371 /* CBGLoveMusicCell.m in Sources */,
 				3ADDF55D1DED899200EDFC97 /* main.m in Sources */,
 				3ADDF5F31DEDBF3A00EDFC97 /* CBGMusic.m in Sources */,
+				3A28AD261E6074F7008D21A7 /* CBGLrcLabel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
