@@ -92,12 +92,7 @@
     [super layoutSubviews];
     
     [self.lrcView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self);
-        make.bottom.equalTo(self);
-        make.height.equalTo(self);
-        make.left.equalTo(self);
-        make.right.equalTo(self);
-        make.width.equalTo(self);
+        make.top.left.right.bottom.equalTo(self);
     }];
 }
 

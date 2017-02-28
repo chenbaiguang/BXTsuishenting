@@ -14,7 +14,10 @@
 #import "UIImageView+WebCache.h"
 
 
-@interface CBGPlayerViewController ()
+#import "CBGLoveMusicCell.h"
+
+
+@interface CBGPlayerViewController ()<UITableViewDataSource,UITableViewDelegate,UIGestureRecognizerDelegate>
 
 /** 不心疼随身听 label */
 @property (strong, nonatomic) UILabel *bxtLabel;
@@ -55,6 +58,9 @@
 /** 歌曲是否播放 */
 @property (assign, nonatomic) BOOL isPlaying;
 
+/** 歌曲是否喜欢 */
+@property (assign, nonatomic) BOOL isLoveMusic;
+
 /** 进度的Timer */
 @property (strong, nonatomic) NSTimer *progressTimer;
 
@@ -75,6 +81,8 @@
 
 
 @implementation CBGPlayerViewController
+
+#pragma mark ============================ 初始化 ============================
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -101,25 +109,25 @@
     
     if(NULLString(playingMusic.icon)){
         [self.circularBtn setBackgroundImage: [UIImage imageNamed:@"noArt"] forState:UIControlStateNormal];
-    }
-    else{
-    // 2.设置界面信息
-    [self.circularBtn.imageView sd_setImageWithURL:[NSURL URLWithString:playingMusic.icon] placeholderImage:nil completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL){
+    }else{
+        // 2.设置界面信息
+        [self.circularBtn.imageView sd_setImageWithURL:[NSURL URLWithString:playingMusic.icon]
+                                  placeholderImage:[UIImage imageNamed:@"noArt"]
+                                         completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL){
         [self.circularBtn setBackgroundImage: image forState:UIControlStateNormal];
-        
-        switch (cacheType) {
-                    case SDImageCacheTypeNone:
-                        NSLog(@"直接下载");
-                        break;
-                    case SDImageCacheTypeDisk:
-                        NSLog(@"磁盘缓存");
-                        break;
-                    case SDImageCacheTypeMemory:
-                        NSLog(@"内存缓存");
-                        break;
-                    default:
-                        break;
-                }
+//        switch (cacheType) {
+//                    case SDImageCacheTypeNone:
+//                        NSLog(@"直接下载");
+//                        break;
+//                    case SDImageCacheTypeDisk:
+//                        NSLog(@"磁盘缓存");
+//                        break;
+//                    case SDImageCacheTypeMemory:
+//                        NSLog(@"内存缓存");
+//                        break;
+//                    default:
+//                        break;
+//                }
         }];
     }
     
@@ -155,12 +163,18 @@
     [self removeLrcTimer];
     [self addLrcTimer];
     
+    // 6.添加通知，监听歌曲播放完毕
     [CBGNoteCenter addObserver:self selector:@selector(playbackFinished) name:AVPlayerItemDidPlayToEndTimeNotification object:self.playMusicTool.player.currentItem];
     
-    // 6.更新界面透明度和按钮图片
+    // 7.更新界面透明度和按钮图片
     [self setAlphaImage];
-   
+    
+    // 8.更新爱心按钮图片
+    [self setLoveBtnImage:playingMusic.loveMusic];
 }
+
+#pragma mark ============================ 通知－歌曲播完完毕 ============================
+
 
 - (void)playbackFinished{
     [self nextMusic];
@@ -215,19 +229,38 @@
 
 - (void)likeSongsView
 {
-    // 喜欢歌曲 view 动画显示
+    // 1.loveMusicView Y值
+    CGFloat y = self.progressView.frame.origin.y + self.progressView.frame.size.height + (20 * kScreenHeightScale);
+    
+    // 2.喜欢歌曲 view 动画显示
     if(self.loveMusicView == nil){
+        // 2.1.初始化 loveMusicView
         self.loveMusicView = [[CBGLoveMusicView alloc] init];
-        self.loveMusicView.frame = CGRectMake(0,[UIScreen mainScreen].bounds.size.height / 2  , [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height / 2);
-    
+        self.loveMusicView.frame = CGRectMake(0, y , CBGScreenWidth, CBGScreenHeight - y);
         [self.view addSubview:_loveMusicView];
+        self.loveMusicView.transform = CGAffineTransformMakeTranslation(0, CBGScreenHeight - y);
     
-        self.loveMusicView.transform = CGAffineTransformMakeTranslation(0, [UIScreen mainScreen].bounds.size.height / 2);
-    
+        // 2.2.清空形变，模仿 modal 效果
         [UIView animateWithDuration:0.3 animations:^{
             self.loveMusicView.transform = CGAffineTransformIdentity;
+            
+            //  2.3.设置背景颜色
+            self.view.backgroundColor = CBGRGBColor(1, 1, 1, 0.4);
         }];
+        
+        // 2.4.设置 tableView代理
+        self.loveMusicView.loveMusicTable.delegate = self;
+        self.loveMusicView.loveMusicTable.dataSource = self;
     }
+    
+    // 3.添加点击手势
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
+    tap.delegate = self;
+    // 轻拍次数
+    tap.numberOfTapsRequired =1;
+    // 轻拍手指个数
+    tap.numberOfTouchesRequired =1;
+    [self.view addGestureRecognizer:tap];
 }
 
 - (void)playOrPause
@@ -240,15 +273,17 @@
     
     // 2.播放／暂停歌曲
     // 3.开始／暂停定时器
-    
     if(self.isPlaying){
         
         [self.playMusicTool playCurrentMusic];
-        [self addProgressTimer];}
+        [self addProgressTimer];
+        [self addLrcTimer];
+    }
     else{
         
         [self.playMusicTool pauseCurrentMusic];
         [self removeProgressTimer];
+        [self removeLrcTimer];
     }
     
 }
@@ -271,9 +306,24 @@
 - (void)loveMusic
 {
     // 0.获取当前歌曲上一次标记
-    // 1.设置爱心按钮的图片
-    // 2.将当前的歌曲添加／删除 loveMusicView 列表
-    // 3.标记取反
+    CBGMusic *playingMusic = [CBGMusicTool playingMusic];
+    
+    // 2.标记取反
+    playingMusic.loveMusic = !playingMusic.loveMusic;
+    
+    // 3.设置爱心按钮的图片
+    [self setLoveBtnImage:playingMusic.loveMusic];
+    
+    // 4.将当前的歌曲添加／删除 MusicTool 数组中
+    [CBGMusicTool setLoveMusics];
+
+}
+
+- (void)setLoveBtnImage:(BOOL)loveMusic
+{
+    UIImage *image;
+    image = loveMusic == 0 ? [UIImage imageNamed:@"btn_heart"] : [UIImage imageNamed:@"btn_heart_red"];
+    [self.loveBtn setImage:image forState:UIControlStateNormal];
 }
 
 - (void)hateMusic
@@ -283,21 +333,27 @@
         return;
     
     // 1.动画删除效果
-    // 隐藏点
+    // 1.1.隐藏点
     CGPoint hidePoint = CGPointMake(CBGScreenWidth /2 , self.loveHateNextView.y + self.hateBtn.y);
-    // 截屏大小
+    // 1.2截屏大小
     CGRect  screenshotRect = CGRectMake(0, 0, CBGScreenWidth, CBGScreenHeight - self.loveHateNextView.frame.size.height);
     
     [CBGAnimationView showScreenshotInHidePoint:hidePoint
                                  screenshotRect:screenshotRect
                                  screenshotView:self.view ];
     
-    // 2.把当前歌曲从 plist 列表中删除
+    // 2.先判断当前歌曲是否喜欢
+    CBGMusic *playingMusic = [CBGMusicTool playingMusic];
+    if(playingMusic.loveMusic){
+        playingMusic.loveMusic = NO;
+        [CBGMusicTool setLoveMusics];
+    }
+    
+    // 3.把当前歌曲从 plist 列表中删除
     [CBGMusicTool hateMusic];
     
-    // 3.切换下一首歌曲
+    // 4.切换下一首歌曲
     [self nextMusic];
-    NSLog(@"播放下一首歌曲");
 }
 
 - (void)nextMusic
@@ -313,9 +369,99 @@
     
     // 3.开始播放歌曲
     [self startPlayingMusic];
-    
 }
 
+#pragma mark ============================ loveMusicView 代理方法 ============================
+
+#pragma mark - 数据源代理
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [CBGMusicTool loveMusics].count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // 1.创建 cell
+    CBGLoveMusicCell *cell = [CBGLoveMusicCell loveMusicCellWithTableView:self.loveMusicView.loveMusicTable];
+    
+    // 2.取出模型数据
+    CBGMusic *cellMusic = [CBGMusicTool loveMusics][indexPath.row];
+    
+    // 3.设置 cell数据
+    cell.textLabel.text = [NSString stringWithFormat:@"%@-%@",cellMusic.name,cellMusic.singer];
+    
+    // 4.处理每个 cell上的按钮事件
+    cell.btnClick = ^(){
+        // 4.1.移除这一行喜欢的歌曲
+        cellMusic.loveMusic = NO;
+        [CBGMusicTool removeLoveMusics:cellMusic];
+        
+        // 4.2.删除这一行 cell,刷新表格
+        [self.loveMusicView.loveMusicTable reloadData];
+    };
+    
+    return cell;
+}
+
+#pragma mark - 监听事件代理
+
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    // 0.移除播放完毕观察者
+    [CBGNoteCenter removeObserver:self];
+    
+    // 1.取出喜欢的歌曲
+    CBGMusic *loveMusic = [CBGMusicTool loveMusics][indexPath.row];
+    
+    // 2.修改当前播放歌曲
+    [CBGMusicTool setPlayingMusic: loveMusic];
+    
+    // 3.开始播放歌曲
+    [self startPlayingMusic];
+    
+    // 4. loveMusicView 消失
+    [self tap:nil];
+}
+
+#pragma mark ============================ 手势处理 ============================
+#pragma mark - 手势点击
+- (void)tap:(UITapGestureRecognizer *)tap
+{
+    NSLog(@"点击了一下");
+    
+    CGFloat y = self.progressView.frame.origin.y + self.progressView.frame.size.height + (20 * kScreenHeightScale);
+    
+    // 0.移除手势
+    [self.view removeGestureRecognizer:tap];
+    
+    // 1. loveMusicView 动画效果下滑移出
+    [UIView animateWithDuration:1 animations:^{
+        self.loveMusicView.transform = CGAffineTransformMakeTranslation(0, CBGScreenHeight - y);
+    } completion:^(BOOL finished) {
+        [self.loveMusicView removeFromSuperview];
+        self.loveMusicView = nil;
+    }];
+    
+    // 2.设置界面透明度
+    self.view.backgroundColor = [UIColor whiteColor];
+}
+
+#pragma mark - 手势范围
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    // 1.获取当前点击的点
+    CGPoint curP = [touch locationInView:self.view];
+    
+    // 2.设置 Y 值最大可点击范围
+    CGFloat maxY = self.loveMusicView.y;
+    
+    // 3.设置点击事件处理范围
+    if(curP.y < maxY)
+        return YES;
+    else
+        return NO;
+}
 
 #pragma mark ============================ 布局子控件 ============================
 
@@ -455,25 +601,5 @@
     }];
     
 }
-
-- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
-    
-    [UIView animateWithDuration:1 animations:^{
-        self.loveMusicView.transform = CGAffineTransformMakeTranslation(0, [UIScreen mainScreen].bounds.size.height / 2);
-        
-    } completion:^(BOOL finished) {
-        [self.loveMusicView removeFromSuperview];
-        self.loveMusicView = nil;
-    }];
-    
-    
-}
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
 
 @end

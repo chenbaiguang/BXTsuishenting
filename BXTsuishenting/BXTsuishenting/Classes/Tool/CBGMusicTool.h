@@ -25,4 +25,10 @@
 
 + (void)hateMusic;
 
++ (NSMutableArray *)loveMusics;
+
++ (void)setLoveMusics;
+
++ (void)removeLoveMusics:(CBGMusic *)removeMusic;
+
 @end

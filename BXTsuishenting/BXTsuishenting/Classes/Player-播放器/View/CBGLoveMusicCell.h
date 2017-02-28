@@ -10,6 +10,7 @@
 
 @interface CBGLoveMusicCell : UITableViewCell
 
+
 /** Block */
 @property (strong, nonatomic) void(^btnClick)();
 

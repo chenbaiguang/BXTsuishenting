@@ -31,12 +31,12 @@
     if (cell == nil) {
         
         cell = [[CBGLoveMusicCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ID];
+        cell.textLabel.textAlignment = NSTextAlignmentCenter;
         cell.backgroundColor = [UIColor clearColor];
     }
     
     return cell;
 }
-
 
 - (void)heartAction
 {
@@ -46,15 +46,5 @@
     }
 }
 
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    // Initialization code
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
-}
 
 @end

@@ -15,21 +15,30 @@
 static NSMutableArray *_musics;
 static CBGMusic *_playingMusic;
 
+static NSMutableArray *_loveMusics;
+
+
 + (void)initialize
 {
-    if (_musics == nil) {
+    if (_musics == nil)
         _musics = [CBGMusic mj_objectArrayWithFilename:@"songName.plist"];
-        NSLog(@"目前有多少:%zd",_musics.count);
-    }
+
     
-    if (_playingMusic == nil) {
+    if (_playingMusic == nil)
         _playingMusic = _musics[0];
-    }
+    
+    if(_loveMusics == nil)
+        _loveMusics = [NSMutableArray array];
 }
 
 + (NSMutableArray *)musics
 {
     return _musics;
+}
+
++ (NSMutableArray *)loveMusics
+{
+    return _loveMusics;
 }
 
 + (CBGMusic *)playingMusic
@@ -57,6 +66,21 @@ static CBGMusic *_playingMusic;
     return nextMusic;
 }
 
++ (CBGMusic *)previousMusic
+{
+    // 1.拿到当前播放歌词下标值
+    NSInteger currentIndex = [_musics indexOfObject:_playingMusic];
+    
+    // 2.取出下一首
+    NSInteger previousIndex = --currentIndex;
+    if (previousIndex < 0) {
+        previousIndex = _musics.count - 1;
+    }
+    CBGMusic *previousMusic = _musics[previousIndex];
+    
+    return previousMusic;
+}
+
 + (void)hateMusic
 {
     // 0.歌曲不能少于 5首
@@ -76,19 +100,27 @@ static CBGMusic *_playingMusic;
         _playingMusic = _musics[--currentIndex];
 }
 
-+ (CBGMusic *)previousMusic
++ (void)setLoveMusics
 {
-    // 1.拿到当前播放歌词下标值
-    NSInteger currentIndex = [_musics indexOfObject:_playingMusic];
-    
-    // 2.取出下一首
-    NSInteger previousIndex = --currentIndex;
-    if (previousIndex < 0) {
-        previousIndex = _musics.count - 1;
+    // 1.判断该歌曲是否喜欢
+    if(_playingMusic.loveMusic)
+    {
+        // 1.1.喜欢，但喜欢数组中没有这个元素
+        if(![_loveMusics containsObject:_playingMusic]){
+            [_loveMusics addObject:_playingMusic];
+            NSLog(@"加入喜爱歌曲");
+        }
     }
-    CBGMusic *previousMusic = _musics[previousIndex];
-    
-    return previousMusic;
+    else{
+        // 2.不喜欢，在喜欢数组中，移除该元素
+        [self removeLoveMusics: _playingMusic];
+    }
 }
+
++ (void)removeLoveMusics:(CBGMusic *)removeMusic
+{
+    [_loveMusics removeObject:removeMusic];
+}
+
 
 @end

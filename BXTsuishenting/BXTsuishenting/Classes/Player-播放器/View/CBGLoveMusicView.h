@@ -9,4 +9,7 @@
 
 @interface CBGLoveMusicView : UIView
 
+/** tableView */
+@property (strong, nonatomic) UITableView *loveMusicTable;
+
 @end

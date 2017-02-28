@@ -9,10 +9,7 @@
 #import "CBGLoveMusicView.h"
 #import "CBGLoveMusicCell.h"
 
-@interface CBGLoveMusicView()<UITableViewDelegate,UITableViewDataSource>
-
-/** tableView */
-@property (strong, nonatomic) UITableView *loveMusicView;
+@interface CBGLoveMusicView()
 
 @end
 
@@ -22,7 +19,7 @@
 - (id)initWithFrame:(CGRect)frame
 {
     if (self = [super initWithFrame:frame]) {
-        self.backgroundColor = [UIColor greenColor];
+        self.backgroundColor = [UIColor whiteColor];
         [self setupTableView];
     }
     return self;
@@ -30,33 +27,22 @@
 
 - (void)setupTableView{
     
-    self.loveMusicView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0,[UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height/2) style:UITableViewStylePlain];
-    self.loveMusicView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.loveMusicView.delegate = self;
-    self.loveMusicView.dataSource = self;
-    self.loveMusicView.rowHeight = 40;
-    self.loveMusicView.bounces = NO;
-    [self addSubview:self.loveMusicView];
+    self.loveMusicTable = [[UITableView alloc] init];
+    self.loveMusicTable.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.loveMusicTable.rowHeight = (35 * kScreenHeightScale);
+    self.loveMusicTable.bounces = NO;
+    [self addSubview:self.loveMusicTable];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+
+- (void)layoutSubviews
 {
-    return 20;
+    [super layoutSubviews];
+    
+    [self.loveMusicTable mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.left.right.bottom.equalTo(self);
+    }];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    CBGLoveMusicCell *cell = [CBGLoveMusicCell loveMusicCellWithTableView:self.loveMusicView];
-    
-    cell.textLabel.text = [NSString stringWithFormat:@"%zd",indexPath.row];
-    
-    __weak typeof(cell) weakCell = cell;
-    cell.btnClick = ^(){
-        NSLog(@"%zd",indexPath.row);
-        weakCell.backgroundColor = [UIColor redColor];
-    };
-    
-    return cell;
-}
 
 @end
