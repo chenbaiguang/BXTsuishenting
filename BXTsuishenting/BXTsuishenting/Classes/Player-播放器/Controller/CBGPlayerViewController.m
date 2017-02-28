@@ -122,27 +122,32 @@
                 }
         }];
     }
+    
+    self.lrcView.songName = playingMusic.name;
+    self.lrcView.singerName = playingMusic.singer;
 
     // 3.开始播放歌曲
     [self.playMusicTool playMusicWithURL:playingMusic.url];
     self.isPlaying = YES;
     
     // 4.设置歌词
-    // 直接使用“服务器本来返回的数据”，不做任何解析
     if(!NULLString(playingMusic.lrcurl)){
+        // 直接使用“服务器本来返回的数据”，不做任何解析
         _afnManager.responseSerializer = [AFHTTPResponseSerializer serializer];
         [_afnManager GET:playingMusic.lrcurl parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     
         NSString *lrcString =  [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-        NSLog(@"%@", lrcString);
-        
         self.lrcView.lrcName = lrcString;
+            
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"请求失败---%@", error);
         }];
+    }else{
+        self.lrcView.lrcName = @"    ";
     }
     
-//    self.lrcView.duration = self.totalTime;
+    self.totalTime = CMTimeGetSeconds(self.playMusicTool.player.currentItem.asset.duration);
+    self.lrcView.duration = self.totalTime;
     
     // 5.添加定时器用户更新进度界面
     [self removeProgressTimer];
@@ -150,8 +155,15 @@
     [self removeLrcTimer];
     [self addLrcTimer];
     
+    [CBGNoteCenter addObserver:self selector:@selector(playbackFinished) name:AVPlayerItemDidPlayToEndTimeNotification object:self.playMusicTool.player.currentItem];
+    
     // 6.更新界面透明度和按钮图片
     [self setAlphaImage];
+   
+}
+
+- (void)playbackFinished{
+    [self nextMusic];
 }
 
 #pragma mark ============================ 定时器处理 ============================
@@ -159,7 +171,7 @@
 - (void)addProgressTimer
 {
     [self updateProgressInfo];
-    self.progressTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateProgressInfo) userInfo:nil repeats:YES];
+    self.progressTimer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(updateProgressInfo) userInfo:nil repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:self.progressTimer forMode:NSRunLoopCommonModes];
 }
 
@@ -171,12 +183,14 @@
 
 - (void)addLrcTimer
 {
-    
+    self.lrcTimer = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateLrc)];
+    [self.lrcTimer addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
 }
 
 - (void)removeLrcTimer
 {
-    
+    [self.lrcTimer invalidate];
+    self.lrcTimer = nil;
 }
 
 #pragma mark - 更新进度的界面
@@ -184,7 +198,6 @@
 {
     // 1.设置当前的播放时间
     self.currentTime = CMTimeGetSeconds(self.playMusicTool.player.currentTime);
-    self.totalTime = CMTimeGetSeconds(self.playMusicTool.player.currentItem.asset.duration);
     
 //    NSLog(@"%f ----  %f",self.currentTime,self.totalTime);
     
@@ -195,7 +208,7 @@
 #pragma mark - 更新歌词的界面
 - (void)updateLrc
 {
-//    self.lrcView.currentTime = self.currentPlayer.currentTime;
+    self.lrcView.currentTime = self.currentTime;
 }
 
 #pragma mark ============================ 按钮事件处理 ============================
@@ -265,10 +278,11 @@
 
 - (void)hateMusic
 {
-    // 1.动画删除效果
-    // 2.把当前歌曲从 plist 列表中删除
-    // 3.切换下一首歌曲
+    // 0.歌曲不能少于 5首
+    if([CBGMusicTool musics].count <= 5)
+        return;
     
+    // 1.动画删除效果
     // 隐藏点
     CGPoint hidePoint = CGPointMake(CBGScreenWidth /2 , self.loveHateNextView.y + self.hateBtn.y);
     // 截屏大小
@@ -277,10 +291,19 @@
     [CBGAnimationView showScreenshotInHidePoint:hidePoint
                                  screenshotRect:screenshotRect
                                  screenshotView:self.view ];
+    
+    // 2.把当前歌曲从 plist 列表中删除
+    [CBGMusicTool hateMusic];
+    
+    // 3.切换下一首歌曲
+    [self nextMusic];
+    NSLog(@"播放下一首歌曲");
 }
 
 - (void)nextMusic
 {
+    // 0.移除播放完毕观察者
+    [CBGNoteCenter removeObserver:self];
     
     // 1.取出下一首播放歌曲
     CBGMusic *nextMusic = [CBGMusicTool nextMusic];

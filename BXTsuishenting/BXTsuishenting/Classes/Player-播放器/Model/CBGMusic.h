@@ -16,4 +16,11 @@
 @property (nonatomic, copy) NSString *singer;
 @property (nonatomic, copy) NSString *icon;
 
+
+
+/****** 额外的辅助属性 ******/
+
+/** 该歌曲是否加入收藏 */
+@property (nonatomic, assign, getter=isLoveMusic) BOOL loveMusic;
+
 @end

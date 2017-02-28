@@ -10,6 +10,7 @@
 #import "CBGLrcCell.h"
 #import "CBGLrcTool.h"
 #import "CBGLrcline.h"
+#import "CBGLrcLabel.h"
 
 @interface  CBGLrcView()<UITableViewDelegate,UITableViewDataSource>
 
@@ -23,9 +24,22 @@
 /** 当前播放的歌词的下标 */
 @property (nonatomic, assign) NSInteger currentIndex;
 
+/** 歌名 label */
+@property (strong, nonatomic) UILabel *songLabel;
+
+/** 歌手 label */
+@property (strong, nonatomic) UILabel *singerLabel;
+
+/** headerView */
+@property (strong, nonatomic) UIView *headerView;
+
+
 @end
 
 @implementation CBGLrcView
+
+
+#pragma mark ============================ 初始化 ============================
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -45,48 +59,33 @@
 
 - (void)setupTableView
 {
-
     UITableView *tableView = [[UITableView alloc] init];
     tableView.backgroundColor = [UIColor clearColor];
     tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     tableView.showsVerticalScrollIndicator = NO;
-    tableView.rowHeight = 30;
+    tableView.rowHeight = (30 * kScreenHeightScale);
     [self addSubview:tableView];
     tableView.dataSource = self;
     tableView.delegate   = self;
-//    tableView.userInteractionEnabled = NO;
     tableView.scrollEnabled = NO;
     self.lrcView = tableView;
     
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 90;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
+    // tableView 的头部
+    self.headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CBGScreenWidth, 90 * kScreenHeightScale)];
+    self.headerView .backgroundColor = [UIColor whiteColor];
     
-    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CBGScreenWidth, 90)];
-    headerView.backgroundColor = [UIColor whiteColor];
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, CBGScreenWidth, 30)];
-    label.font = [UIFont systemFontOfSize:26.0f];
-    label.textColor = [UIColor blackColor];
-    label.textAlignment = NSTextAlignmentCenter;
-    label.text = @"传奇";
-    [headerView addSubview:label];
+    self.songLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, CBGScreenWidth, 30 * kScreenHeightScale)];
+    self.songLabel.font = [UIFont systemFontOfSize:(26.0f * kScreenHeightScale) ];
+    self.songLabel.textColor = [UIColor blackColor];
+    self.songLabel.textAlignment = NSTextAlignmentCenter;
+    [self.headerView  addSubview:self.songLabel];
     
-    UILabel *label2 = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, CBGScreenWidth, 30)];
-    label2.font = [UIFont systemFontOfSize:20.0f];
-    label2.textColor = CBGRGBColor(128, 128, 128, 1);
-    label2.textAlignment = NSTextAlignmentCenter;
-    label2.text = @"王菲";
-    [headerView addSubview:label2];
-    
-    return  headerView;
+    self.singerLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, CBGScreenWidth, 30 * kScreenHeightScale)];
+    self.singerLabel.font = [UIFont systemFontOfSize: (20.0f * kScreenHeightScale)];
+    self.singerLabel.textColor = CBGRGBColor(128, 128, 128, 1);
+    self.singerLabel.textAlignment = NSTextAlignmentCenter;
+    [self.headerView  addSubview:self.singerLabel];
 }
-
 
 - (void)layoutSubviews
 {
@@ -102,10 +101,29 @@
     }];
 }
 
-#pragma mark - 实现tableView数据源方法
+#pragma mark ============================ tabelView 代理 ============================
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return (90 * kScreenHeightScale);
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    return  self.headerView ;
+}
+
+#pragma mark - 数据源方法
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.lrclist.count;
+    // 防止 tabelView.y 不对
+    if(self.lrclist.count == 0)
+    {
+        return 10;
+    }else{
+        return self.lrclist.count;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -113,25 +131,56 @@
     // 1.创建Cell
     CBGLrcCell *cell = [CBGLrcCell lrcCellWithTableView:tableView];
     
-    cell.textLabel.font = [UIFont systemFontOfSize:16];
-    cell.textLabel.textAlignment = NSTextAlignmentCenter;
-//        cell.textLabel.progress = 0;
+    // 2.清空复用 cell 颜色
+    if (self.currentIndex != indexPath.row)
+        cell.lrcLabel.progress = 0;
     
-    // 2.给cell设置数据
-    // 2.1.取出模型
-    CBGLrcline *lrcline = self.lrclist[indexPath.row];
-    
-    // 2.2.给cell设置数据
-    cell.textLabel.text = lrcline.text;
+    // 3.给cell设置数据
+    if(self.lrclist.count != 0)
+    {
+        // 3.1.取出模型
+        CBGLrcline *lrcline = self.lrclist[indexPath.row];
+        
+        // 3.2.给cell设置数据
+        cell.lrcLabel.text = lrcline.text;
+        cell.lrcLabel.textColor = [UIColor blackColor];
+
+    }else{
+        if(indexPath.row == 2){
+            cell.lrcLabel.text = @"歌词还没找到～";
+            cell.lrcLabel.textColor = CBGRGBColor(128, 128, 128, 0.5);
+        }else{
+            cell.lrcLabel.text = @"   ";
+        }
+    }
     
     return cell;
 }
 
 
+#pragma mark ============================ 重写 set 方法 ============================
 
-#pragma mark - 重写setLrcName方法
+- (void)setSongName:(NSString *)songName
+{
+    _songName = [songName copy];
+    
+    self.songLabel.text = _songName;
+}
+
+- (void)setSingerName:(NSString *)singerName
+{
+    _singerName = [singerName copy];
+    
+    self.singerLabel.text = _singerName;
+}
+
 - (void)setLrcName:(NSString *)lrcName
 {
+    // 切换歌词后，tabel 回滚顶部
+    CGPoint offset = self.lrcView.contentOffset;
+    offset.y = -self.lrcView.contentInset.top;
+    [self.lrcView setContentOffset:offset animated:YES];
+    
     // 0.重置保存的当前位置的下标
     self.currentIndex = 0;
     
@@ -139,88 +188,86 @@
     _lrcName = [lrcName copy];
     
     // 2.解析歌词
-    self.lrclist = [CBGLrcTool lrcToolWithLrcName:lrcName];
+    if(!NULLString(_lrcName))
+        self.lrclist = [CBGLrcTool lrcToolWithLrcName:lrcName];
+    else
+        self.lrclist = nil;
     
     // 3.刷新表格
     [self.lrcView reloadData];
 }
 
-//#pragma mark - 重写setCurrentTime方法
-//- (void)setCurrentTime:(NSTimeInterval)currentTime
-//{
-//    _currentTime = currentTime;
-//    
-//    // 用当前时间和歌词进行匹配
-//    NSInteger count = self.lrclist.count;
-//    for (int i = 0; i < count; i++) {
-//        // 1.拿到i位置的歌词
-//        XMGLrcline *currentLrcLine = self.lrclist[i];
-//        
-//        // 2.拿到下一句的歌词
-//        NSInteger nextIndex = i + 1;
-//        XMGLrcline *nextLrcLine = nil;
-//        if (nextIndex < count) {
-//            nextLrcLine = self.lrclist[nextIndex];
-//        }
-//        
-//        // 3.用当前的时间和i位置的歌词比较,并且和下一句比较,如果大于i位置的时间,并且小于下一句歌词的时间,那么显示当前的歌词
-//        if (self.currentIndex != i && currentTime >= currentLrcLine.time && currentTime < nextLrcLine.time) {
-//            
-//            // 1.获取需要刷新的行号
-//            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
-//            NSIndexPath *previousIndexPath = [NSIndexPath indexPathForRow:self.currentIndex inSection:0];
-//            
-//            // 2.记录当前i的行号
-//            self.currentIndex = i;
-//            
-//            // 3.刷新当前的行,和上一行
-//            [self.tableView reloadRowsAtIndexPaths:@[indexPath, previousIndexPath] withRowAnimation:UITableViewRowAnimationNone];
-//            
-//            // 4.显示对应句的歌词
-//            [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
-//            
-//            // 5.设置外面歌词的Label的显示歌词
-//            self.lrcLabel.text = currentLrcLine.text;
-//            
-//            // 6.生成锁屏界面的图片
+#pragma mark - 重写setCurrentTime方法
+- (void)setCurrentTime:(NSTimeInterval)currentTime
+{
+    _currentTime = currentTime;
+    
+    // 用当前时间和歌词进行匹配
+    NSInteger count = self.lrclist.count;
+    for (int i = 0; i < count; i++) {
+        // 1.拿到i位置的歌词
+        CBGLrcline *currentLrcLine = self.lrclist[i];
+        
+        // 2.拿到下一句的歌词
+        NSInteger nextIndex = i + 1;
+        CBGLrcline *nextLrcLine = nil;
+        if (nextIndex < count) {
+            nextLrcLine = self.lrclist[nextIndex];
+        }
+        
+        // 3.用当前的时间和i位置的歌词比较,并且和下一句比较,如果大于i位置的时间,并且小于下一句歌词的时间,那么显示当前的歌词
+        if (self.currentIndex != i && currentTime >= currentLrcLine.time && currentTime < nextLrcLine.time) {
+            
+            // 1.获取需要刷新的行号
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+            NSIndexPath *previousIndexPath = [NSIndexPath indexPathForRow:self.currentIndex inSection:0];
+            
+            // 2.记录当前i的行号
+            self.currentIndex = i;
+            
+            // 3.刷新当前的行,和上一行
+            [self.lrcView reloadRowsAtIndexPaths:@[indexPath, previousIndexPath] withRowAnimation:UITableViewRowAnimationNone];
+            
+            // 4.显示对应句的歌词
+            [self.lrcView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            
+            // 5.生成锁屏界面的图片
 //            [self generatorLockImage];
-//        }
-//        
-//        // 4.根据进度,显示label画多少
-//        if (self.currentIndex == i) {
-//            // 4.1.拿到i位置的cell
-//            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
-//            XMGLrcCell *cell = (XMGLrcCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-//            
-//            // 4.2.更新label的进度
-//            CGFloat progress = (currentTime - currentLrcLine.time) / (nextLrcLine.time - currentLrcLine.time);
-//            cell.lrcLabel.progress = progress;
-//            
-//            // 4.3.设置外面歌词的Label的进度
-//            self.lrcLabel.progress = progress;
-//        }
-//    }
-//}
-//
+        }
+        
+        // 4.根据进度,显示label画多少
+        if (self.currentIndex == i) {
+            // 4.1.拿到i位置的cell
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+            CBGLrcCell *cell = (CBGLrcCell *)[self.lrcView cellForRowAtIndexPath:indexPath];
+            
+            // 4.2.更新label的进度
+            CGFloat progress = (currentTime - currentLrcLine.time) / (nextLrcLine.time - currentLrcLine.time);
+            cell.lrcLabel.progress = progress;
+            
+        }
+    }
+}
+
 //#pragma mark - 生成锁屏界面的图片
 //- (void)generatorLockImage
 //{
 //    // 1.拿到当前歌曲的图片
-//    XMGMusic *playingMusic = [XMGMusicTool playingMusic];
+//    CBGMusic *playingMusic = [CBGMusicTool playingMusic];
 //    UIImage *currentImage = [UIImage imageNamed:playingMusic.icon];
 //    
 //    // 2.拿到三句歌词
 //    // 2.1.获取当前的歌词
-//    XMGLrcline *currentLrc = self.lrclist[self.currentIndex];
+//    CBGLrcline *currentLrc = self.lrclist[self.currentIndex];
 //    // 2.2.上一句歌词
 //    NSInteger previousIndex = self.currentIndex - 1;
-//    XMGLrcline *prevousLrc = nil;
+//    CBGLrcline *prevousLrc = nil;
 //    if (previousIndex >= 0) {
 //        prevousLrc = self.lrclist[previousIndex];
 //    }
 //    // 2.3.下一句歌词
 //    NSInteger nextIndex = self.currentIndex + 1;
-//    XMGLrcline *nextLrc = nil;
+//    CBGLrcline *nextLrc = nil;
 //    if (nextIndex < self.lrclist.count) {
 //        nextLrc = self.lrclist[nextIndex];
 //    }
@@ -258,7 +305,7 @@
 //- (void)setupLockScreenInfoWithLockImage:(UIImage *)lockImage
 //{
 //    // 0.获取当前正在播放的歌曲
-//    XMGMusic *playingMusic = [XMGMusicTool playingMusic];
+//    CBGMusic *playingMusic = [CBGMusicTool playingMusic];
 //    
 //    // 1.获取锁屏界面中心
 //    MPNowPlayingInfoCenter *playingInfoCenter = [MPNowPlayingInfoCenter defaultCenter];

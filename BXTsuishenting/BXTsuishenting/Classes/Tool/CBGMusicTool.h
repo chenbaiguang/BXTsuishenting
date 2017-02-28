@@ -13,7 +13,7 @@
 
 @interface CBGMusicTool : NSObject
 
-+ (NSArray *)musics;
++ (NSMutableArray *)musics;
 
 + (CBGMusic *)playingMusic;
 
@@ -22,5 +22,7 @@
 + (CBGMusic *)nextMusic;
 
 + (CBGMusic *)previousMusic;
+
++ (void)hateMusic;
 
 @end

@@ -8,7 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@class CBGLrcLabel;
+
 @interface CBGLrcCell : UITableViewCell
+
+@property (nonatomic, weak, readonly) CBGLrcLabel *lrcLabel;
 
 + (instancetype)lrcCellWithTableView:(UITableView *)tableView;
 

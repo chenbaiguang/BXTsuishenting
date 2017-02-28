@@ -10,6 +10,13 @@
 
 @interface CBGLrcView : UIView
 
+/** 歌名 */
+@property (copy, nonatomic) NSString *songName;
+
+/** 歌手 */
+@property (copy, nonatomic) NSString *singerName;
+
+/** 歌词 */
 @property (nonatomic, copy) NSString *lrcName;
 
 /** 当前播放的时间 */

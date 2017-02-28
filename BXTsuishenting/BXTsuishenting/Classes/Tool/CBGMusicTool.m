@@ -12,13 +12,14 @@
 
 @implementation CBGMusicTool
 
-static NSArray *_musics;
+static NSMutableArray *_musics;
 static CBGMusic *_playingMusic;
 
 + (void)initialize
 {
     if (_musics == nil) {
         _musics = [CBGMusic mj_objectArrayWithFilename:@"songName.plist"];
+        NSLog(@"目前有多少:%zd",_musics.count);
     }
     
     if (_playingMusic == nil) {
@@ -26,7 +27,7 @@ static CBGMusic *_playingMusic;
     }
 }
 
-+ (NSArray *)musics
++ (NSMutableArray *)musics
 {
     return _musics;
 }
@@ -54,6 +55,25 @@ static CBGMusic *_playingMusic;
     CBGMusic *nextMusic = _musics[nextIndex];
     
     return nextMusic;
+}
+
++ (void)hateMusic
+{
+    // 0.歌曲不能少于 5首
+    if( _musics.count <= 5)
+        return;
+    
+    // 1.拿到当前播放歌词下标值
+    NSInteger currentIndex = [_musics indexOfObject:_playingMusic];
+        
+    // 2.从数组中移除当前歌词下标值
+    [_musics removeObjectAtIndex:currentIndex];
+        
+    // 3.修改播放歌曲下标值
+    if(currentIndex == 0)
+        _playingMusic = 0;
+    else
+        _playingMusic = _musics[--currentIndex];
 }
 
 + (CBGMusic *)previousMusic

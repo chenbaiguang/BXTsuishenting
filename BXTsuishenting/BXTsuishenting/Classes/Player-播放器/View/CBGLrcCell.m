@@ -7,6 +7,7 @@
 //
 
 #import "CBGLrcCell.h"
+#import "CBGLrcLabel.h"
 #import "Masonry.h"
 
 @implementation CBGLrcCell
@@ -15,6 +16,16 @@
 {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
 
+        CBGLrcLabel *lrcLabel = [[CBGLrcLabel alloc] init];
+        lrcLabel.textColor = [UIColor blackColor];
+        lrcLabel.font = [UIFont systemFontOfSize:(16.0 * kScreenHeightScale)];
+        lrcLabel.textAlignment = NSTextAlignmentCenter;
+        [self.contentView addSubview:lrcLabel];
+        _lrcLabel = lrcLabel;
+        lrcLabel.translatesAutoresizingMaskIntoConstraints = NO;
+        [lrcLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(self.contentView);
+        }];
     }
     return self;
 }
