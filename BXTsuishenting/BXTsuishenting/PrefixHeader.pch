@@ -30,7 +30,9 @@
 
 #define CBGNoteCenter           [NSNotificationCenter defaultCenter]
 
+#define noNetwork               self.manager.networkReachabilityStatus == -1 || self.manager.                                             networkReachabilityStatus == 0
 
+                                
 #define CBGGreenColor           [UIColor colorWithRed:(137)/255.0 green:(203)/255.0 blue:(149)/255.0 alpha:1.0]
 #define CBGRGBColor(r, g, b, a) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:(a)]
 

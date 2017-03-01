@@ -25,5 +25,7 @@
 /** 当前歌曲的总时长 */
 @property (nonatomic, assign) NSTimeInterval duration;
 
+/** 锁屏界面的 image */
+@property (strong, nonatomic) UIImage *lockImage;
 
 @end

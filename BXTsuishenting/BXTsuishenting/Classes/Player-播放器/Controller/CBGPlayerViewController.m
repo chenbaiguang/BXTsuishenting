@@ -34,6 +34,9 @@
 /** 圆形按钮 */
 @property (strong, nonatomic) UIButton *circularBtn;
 
+/** 播放 imageView 图片 */
+@property (strong, nonatomic) UIImageView *playImageView;
+
 /** 圆形按钮宽度 */
 @property (assign, nonatomic) CGFloat circularBtnWidth;
 
@@ -76,6 +79,9 @@
 /** 网络请求 */
 @property (strong, nonatomic) AFHTTPSessionManager *afnManager;
 
+/** 网络监测 */
+@property (strong, nonatomic) AFNetworkReachabilityManager *manager;
+
 
 @end
 
@@ -90,14 +96,48 @@
     // 0.初始化
     self.view.backgroundColor = [UIColor whiteColor];
     self.playMusicTool = [CBGPlayMusicTool sharedPlayMusicTool];
-    _afnManager = [AFHTTPSessionManager manager];
-
+    self.afnManager = [AFHTTPSessionManager manager];
+    self.manager= [AFNetworkReachabilityManager manager];
+    
     // 1.设置界面UI
     [self setup];
     
-    // 2.展示界面的信息
-    [self startPlayingMusic];
+    // 2.开始网络监测
+    [self.manager startMonitoring];
+    
+    // 3.监测网络状态
+    [self afnNetwork];
+}
+#pragma mark ============================ 网络状态监测 ============================
 
+- (void)afnNetwork
+{
+    __weak typeof(self) weakSelf = self;
+    
+    // 网络状态发生变化会进入 Block
+    [self.manager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+
+        // 1.有网络情况下，已经播放过歌曲
+        if(weakSelf.playMusicTool.player.currentItem)
+        {
+            // 1.1.网络突然断开
+            if(noNetwork){
+                weakSelf.isPlaying = NO;}
+            // 1.2.网络连接上
+            else{
+                weakSelf.isPlaying = YES;}
+            
+            // 1.3.更新播放信息
+            [weakSelf setAlphaImage];
+        }
+        
+        
+        // 2.刚开始开始进入程序，有网并且没有歌曲在播放，仅执行一次
+        if(status == 1 || status == 2)
+            if(!weakSelf.playMusicTool.player.currentItem)
+                [weakSelf startPlayingMusic];
+    }] ;
+    
 }
 
 #pragma mark ============================ 开始播放音乐 ============================
@@ -108,13 +148,14 @@
     CBGMusic *playingMusic = [CBGMusicTool playingMusic];
     
     if(NULLString(playingMusic.icon)){
-        [self.circularBtn setBackgroundImage: [UIImage imageNamed:@"noArt"] forState:UIControlStateNormal];
+        [self.circularBtn setImage:nil forState:UIControlStateNormal];
     }else{
         // 2.设置界面信息
         [self.circularBtn.imageView sd_setImageWithURL:[NSURL URLWithString:playingMusic.icon]
                                   placeholderImage:[UIImage imageNamed:@"noArt"]
                                          completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL){
-        [self.circularBtn setBackgroundImage: image forState:UIControlStateNormal];
+        [self.circularBtn setImage:image forState:UIControlStateNormal];
+                                             self.lrcView.lockImage = image;
 //        switch (cacheType) {
 //                    case SDImageCacheTypeNone:
 //                        NSLog(@"直接下载");
@@ -229,6 +270,11 @@
 
 - (void)likeSongsView
 {
+    if(noNetwork){
+        NSLog(@"网络出现问题啦～看不了喜欢歌曲");
+        return;
+    }
+    
     // 1.loveMusicView Y值
     CGFloat y = self.progressView.frame.origin.y + self.progressView.frame.size.height + (20 * kScreenHeightScale);
     
@@ -265,46 +311,51 @@
 
 - (void)playOrPause
 {
+    if(noNetwork){
+        NSLog(@"网络出现问题啦～播放不了歌曲");
+        return;
+    }
+    
     // 0.标记取反
     self.isPlaying = !self.isPlaying;
     
     // 1.设置透明度和按钮图片
     [self setAlphaImage];
-    
-    // 2.播放／暂停歌曲
-    // 3.开始／暂停定时器
-    if(self.isPlaying){
-        
-        [self.playMusicTool playCurrentMusic];
-        [self addProgressTimer];
-        [self addLrcTimer];
-    }
-    else{
-        
-        [self.playMusicTool pauseCurrentMusic];
-        [self removeProgressTimer];
-        [self removeLrcTimer];
-    }
-    
 }
 
 - (void)setAlphaImage
 {
-    // 1.设置圆形按钮的图片
+    // 1.设置圆形按钮／歌词view 透明度
     CGFloat alphaValue;
     alphaValue = self.isPlaying == 0 ? 0.3:1;
     self.circularBtn.alpha = alphaValue;
     self.lrcView.alpha = alphaValue;
     
-    // 2.圆形按钮／歌词view 透明度
+    // 2.设置播放 imageView 的图片
     UIImage *image;
     image = self.isPlaying == 0 ? [UIImage imageNamed:@"btn_play" ] : nil;
-    [self.circularBtn setImage:image forState:UIControlStateNormal];
-
+    self.playImageView.image = image;
+    
+    // 3.播放／暂停歌曲
+    // 4.开始／暂停定时器
+    if(self.isPlaying){
+        [self.playMusicTool playCurrentMusic];
+        [self addProgressTimer];
+        [self addLrcTimer];
+    }else{
+        [self.playMusicTool pauseCurrentMusic];
+        [self removeProgressTimer];
+        [self removeLrcTimer];
+    }
 }
 
 - (void)loveMusic
 {
+    if(noNetwork){
+        NSLog(@"网络出现问题啦～收藏不了歌曲");
+        return;
+    }
+    
     // 0.获取当前歌曲上一次标记
     CBGMusic *playingMusic = [CBGMusicTool playingMusic];
     
@@ -328,6 +379,11 @@
 
 - (void)hateMusic
 {
+    if(noNetwork){
+        NSLog(@"网络出现问题啦～删除不了歌曲");
+        return;
+    }
+    
     // 0.歌曲不能少于 5首
     if([CBGMusicTool musics].count <= 5)
         return;
@@ -358,6 +414,11 @@
 
 - (void)nextMusic
 {
+    if(noNetwork){
+        NSLog(@"网络出现问题啦～切换不了歌曲");
+        return;
+    }
+    
     // 0.移除播放完毕观察者
     [CBGNoteCenter removeObserver:self];
     
@@ -383,21 +444,30 @@
 {
     // 1.创建 cell
     CBGLoveMusicCell *cell = [CBGLoveMusicCell loveMusicCellWithTableView:self.loveMusicView.loveMusicTable];
-    
+        
     // 2.取出模型数据
     CBGMusic *cellMusic = [CBGMusicTool loveMusics][indexPath.row];
+    CBGMusic *playignMusic = [CBGMusicTool playingMusic];
     
     // 3.设置 cell数据
     cell.textLabel.text = [NSString stringWithFormat:@"%@-%@",cellMusic.name,cellMusic.singer];
+    cell.textLabel.font = [UIFont systemFontOfSize:(16.0 * kScreenHeightScale)];
+
     
     // 4.处理每个 cell上的按钮事件
+    __weak typeof(self) weakSelf = self;
     cell.btnClick = ^(){
-        // 4.1.移除这一行喜欢的歌曲
+
+        // 4.1.点击移除歌曲是正在播放的，就更新当前页面
+        if(cellMusic == playignMusic)
+            [weakSelf setLoveBtnImage:NO];
+        
+        // 4.2.移除这一行喜欢的歌曲
         cellMusic.loveMusic = NO;
         [CBGMusicTool removeLoveMusics:cellMusic];
         
-        // 4.2.删除这一行 cell,刷新表格
-        [self.loveMusicView.loveMusicTable reloadData];
+        // 4.3.删除这一行 cell,刷新表格
+        [weakSelf.loveMusicView.loveMusicTable reloadData];
     };
     
     return cell;
@@ -428,7 +498,6 @@
 #pragma mark - 手势点击
 - (void)tap:(UITapGestureRecognizer *)tap
 {
-    NSLog(@"点击了一下");
     
     CGFloat y = self.progressView.frame.origin.y + self.progressView.frame.size.height + (20 * kScreenHeightScale);
     
@@ -461,6 +530,29 @@
         return YES;
     else
         return NO;
+}
+
+#pragma mark ============================ 远程事件(后台处理) ============================
+
+- (void)remoteControlReceivedWithEvent:(UIEvent *)event
+{
+    switch (event.subtype) {
+        case UIEventSubtypeRemoteControlPlay:
+        case UIEventSubtypeRemoteControlPause:
+            [self playOrPause];
+            break;
+            
+        case UIEventSubtypeRemoteControlNextTrack:
+            [self nextMusic];
+            break;
+            
+        case UIEventSubtypeRemoteControlPreviousTrack:
+//            [self previous];
+            break;
+            
+        default:
+            break;
+    }
 }
 
 #pragma mark ============================ 布局子控件 ============================
@@ -498,9 +590,13 @@
     self.circularBtn.layer.cornerRadius = (self.circularBtnWidth * kScreenHeightScale) / 2;
     self.circularBtn.clipsToBounds = YES;
     self.circularBtn.adjustsImageWhenHighlighted = NO;
-    self.circularBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, (-15 * kScreenWidthScale));
+    [self.circularBtn setBackgroundImage: [UIImage imageNamed:@"noArt"] forState:UIControlStateNormal];
     [self.circularBtn addTarget:self action:@selector(playOrPause) forControlEvents:UIControlEventTouchUpInside];
     [self.progressView addSubview:self.circularBtn];
+    
+    // 播放 imageView 的图片
+    self.playImageView = [[UIImageView alloc] init];
+    [self.view addSubview:self.playImageView];
     
     // 喜欢／讨厌／下一首 按钮的 View
     self.loveHateNextView = [[UIView alloc] init];
@@ -553,6 +649,14 @@
     [self.circularBtn makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self.progressView);
         make.width.height.equalTo(self.circularBtnWidth * kScreenHeightScale);
+    }];
+    
+    // 播放 imageView 的图片
+    [self.playImageView makeConstraints:^(MASConstraintMaker *make) {
+        make.centerY.equalTo(self.progressView);
+        make.centerX.equalTo(self.progressView).offset(5 * kScreenWidthScale);
+        make.width.equalTo(70 / 2);
+        make.height.equalTo(86 / 2);
     }];
     
     // 更多 button
