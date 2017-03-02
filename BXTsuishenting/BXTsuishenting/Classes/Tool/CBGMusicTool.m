@@ -108,7 +108,6 @@ static NSMutableArray *_loveMusics;
         // 1.1.喜欢，但喜欢数组中没有这个元素
         if(![_loveMusics containsObject:_playingMusic]){
             [_loveMusics addObject:_playingMusic];
-            NSLog(@"加入喜爱歌曲");
         }
     }
     else{

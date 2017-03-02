@@ -82,6 +82,9 @@
 /** 网络监测 */
 @property (strong, nonatomic) AFNetworkReachabilityManager *manager;
 
+/** 毛玻璃 View */
+@property (strong, nonatomic) UIVisualEffectView * effectView;
+
 
 @end
 
@@ -257,10 +260,22 @@
 
 - (void)likeSongsView
 {
+    
     if(noNetwork){
         NSLog(@"网络出现问题啦～看不了喜欢歌曲");
         return;
     }
+    
+    // 0.添加毛玻璃
+    // 毛玻璃模糊程度
+    UIBlurEffect * blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+    // 毛玻璃视图
+    self.effectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+    self.effectView.backgroundColor = CBGRGBColor(137, 203, 149, 0.1);
+    // 系统会提示不能这样设置，但是能用
+    self.effectView.alpha = 0.6;
+    self.effectView.frame = self.view.bounds;
+    [self.view addSubview:self.effectView];
     
     // 1.loveMusicView Y值
     CGFloat y = self.progressView.frame.origin.y + self.progressView.frame.size.height + (20 * kScreenHeightScale);
@@ -276,12 +291,9 @@
         // 2.2.清空形变，模仿 modal 效果
         [UIView animateWithDuration:0.3 animations:^{
             self.loveMusicView.transform = CGAffineTransformIdentity;
-            
-            //  2.3.设置背景颜色
-            self.view.backgroundColor = CBGRGBColor(1, 1, 1, 0.4);
         }];
         
-        // 2.4.设置 tableView代理
+        // 2.3.设置 tableView代理
         self.loveMusicView.loveMusicTable.delegate = self;
         self.loveMusicView.loveMusicTable.dataSource = self;
     }
@@ -298,6 +310,7 @@
 
 - (void)playOrPause
 {
+    
     if(noNetwork){
         NSLog(@"网络出现问题啦～播放不了歌曲");
         return;
@@ -514,13 +527,19 @@
     // 1. loveMusicView 动画效果下滑移出
     [UIView animateWithDuration:1 animations:^{
         self.loveMusicView.transform = CGAffineTransformMakeTranslation(0, CBGScreenHeight - y);
+        
     } completion:^(BOOL finished) {
+        
         [self.loveMusicView removeFromSuperview];
         self.loveMusicView = nil;
+        
+        // 2.移除毛玻璃 view
+        [self.effectView removeFromSuperview];
+        self.effectView = nil;
+        
+        NSLog(@"%@",self.effectView);
     }];
     
-    // 2.设置界面透明度
-    self.view.backgroundColor = [UIColor whiteColor];
 }
 
 #pragma mark - 手势范围
@@ -627,10 +646,11 @@
     [self.nextBtn addTarget:self action:@selector(nextMusic) forControlEvents:UIControlEventTouchUpInside];
     [self.loveHateNextView addSubview: self.nextBtn];
     
+    // 歌词 view
     self.lrcView = [[CBGLrcView alloc] init];
     self.lrcView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.lrcView];
-    
+
 }
 
 #pragma mark - 布局子控件 frame

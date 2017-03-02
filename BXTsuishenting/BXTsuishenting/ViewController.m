@@ -25,6 +25,7 @@
     
     [self.view addSubview:playerViewController.view];
     [self addChildViewController:playerViewController];
+    
 }
 
 - (void)didReceiveMemoryWarning {

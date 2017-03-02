@@ -14,9 +14,7 @@
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
-        
-        NSLog(@"%f",self.frame.size.height);
-        
+
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
         [btn setTitle:@"x" forState:UIControlStateNormal];
         [btn setTitleColor:CBGGreenColor forState:UIControlStateNormal];
@@ -50,7 +48,6 @@
 
 - (void)heartAction
 {
-    NSLog(@"点击了爱心");
     if(self.btnClick){
         self.btnClick();
     }
