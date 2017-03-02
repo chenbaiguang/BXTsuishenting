@@ -29,9 +29,10 @@
     
     self.loveMusicTable = [[UITableView alloc] init];
     self.loveMusicTable.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.loveMusicTable.rowHeight = (35 * kScreenHeightScale);
+    self.loveMusicTable.rowHeight = (38 * kScreenHeightScale);
     self.loveMusicTable.bounces = NO;
     [self addSubview:self.loveMusicTable];
+
 }
 
 

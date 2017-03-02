@@ -17,6 +17,7 @@
 #import "CBGLoveMusicCell.h"
 
 #import "CBGBlurView.h"
+#import "CBGNoNetwork.h"
 
 
 @interface CBGPlayerViewController ()<UITableViewDataSource,UITableViewDelegate,UIGestureRecognizerDelegate>
@@ -465,7 +466,7 @@
     
     // 3.设置 cell数据
     cell.textLabel.text = [NSString stringWithFormat:@"%@-%@",cellMusic.name,cellMusic.singer];
-    cell.textLabel.font = [UIFont systemFontOfSize:(16.0 * kScreenHeightScale)];
+    cell.textLabel.font = [UIFont systemFontOfSize:(18.0 * kScreenHeightScale)];
 
     
     // 4.处理每个 cell上的按钮事件
@@ -487,9 +488,30 @@
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return (60 * kScreenHeightScale);
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    
+    UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CBGScreenWidth, 50 * kScreenHeightScale)];
+    headerView.backgroundColor = CBGRGBColor(255, 251, 250, 1);
+    headerView.layer.borderColor = CBGRGBColor(255, 255, 255, 1).CGColor;
+    headerView.layer.borderWidth = 1;
+    
+    UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, CBGScreenWidth, 50 * kScreenHeightScale)];
+    lbl.text = @"喜欢的歌曲";
+    lbl.font = [UIFont systemFontOfSize:(20.0 * kScreenHeightScale)];
+    lbl.textColor = CBGGreenColor;
+    lbl.textAlignment = NSTextAlignmentCenter;
+    [headerView addSubview:lbl];
+
+    return  headerView ;
+}
+
 #pragma mark - 监听事件代理
-
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // 0.移除播放完毕观察者
@@ -723,5 +745,6 @@
     }];
     
 }
+
 
 @end

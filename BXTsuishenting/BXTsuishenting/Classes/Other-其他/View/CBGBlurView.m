@@ -20,9 +20,9 @@ static UIVisualEffectView *_effectView;
     
     // 模糊 view
     _effectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    _effectView.backgroundColor = CBGRGBColor(137, 203, 149, 0.1);
+    _effectView.backgroundColor = CBGRGBColor(137, 203, 149, 0.2);
     // 系统会提示不能这样设置，但是能用
-    _effectView.alpha = 0.6;
+    _effectView.alpha = 0.5;
     _effectView.frame = view.bounds;
     [view addSubview:_effectView];
 }
