@@ -16,6 +16,8 @@
 
 #import "CBGLoveMusicCell.h"
 
+#import "CBGBlurView.h"
+
 
 @interface CBGPlayerViewController ()<UITableViewDataSource,UITableViewDelegate,UIGestureRecognizerDelegate>
 
@@ -267,20 +269,12 @@
     }
     
     // 0.添加毛玻璃
-    // 毛玻璃模糊程度
-    UIBlurEffect * blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-    // 毛玻璃视图
-    self.effectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-    self.effectView.backgroundColor = CBGRGBColor(137, 203, 149, 0.1);
-    // 系统会提示不能这样设置，但是能用
-    self.effectView.alpha = 0.6;
-    self.effectView.frame = self.view.bounds;
-    [self.view addSubview:self.effectView];
+    [CBGBlurView show:self.view];
     
     // 1.loveMusicView Y值
     CGFloat y = self.progressView.frame.origin.y + self.progressView.frame.size.height + (20 * kScreenHeightScale);
     
-    // 2.喜欢歌曲 view 动画显示
+    // 2.喜欢歌曲 view 动画显示blurView
     if(self.loveMusicView == nil){
         // 2.1.初始化 loveMusicView
         self.loveMusicView = [[CBGLoveMusicView alloc] init];
@@ -534,10 +528,7 @@
         self.loveMusicView = nil;
         
         // 2.移除毛玻璃 view
-        [self.effectView removeFromSuperview];
-        self.effectView = nil;
-        
-        NSLog(@"%@",self.effectView);
+        [CBGBlurView hide];
     }];
     
 }

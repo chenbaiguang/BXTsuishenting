@@ -27,6 +27,7 @@
 		3ADDF5F01DEDBF2200EDFC97 /* CBGMusicTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADDF5EF1DEDBF2200EDFC97 /* CBGMusicTool.m */; };
 		3ADDF5F31DEDBF3A00EDFC97 /* CBGMusic.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADDF5F21DEDBF3900EDFC97 /* CBGMusic.m */; };
 		3ADDF5F61DEDBF6E00EDFC97 /* CBGPlayMusicTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ADDF5F51DEDBF6E00EDFC97 /* CBGPlayMusicTool.m */; };
+		3AE229121E67FCE100D5E842 /* CBGBlurView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE229111E67FCE100D5E842 /* CBGBlurView.m */; };
 		3AE4BADF1E52D5120093A371 /* CBGAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE4BADE1E52D5120093A371 /* CBGAnimationView.m */; };
 		3AE4BAE41E52E9830093A371 /* CBGLoveMusicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE4BAE11E52E9830093A371 /* CBGLoveMusicCell.m */; };
 		3AE4BAE51E52E9830093A371 /* CBGLoveMusicView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE4BAE31E52E9830093A371 /* CBGLoveMusicView.m */; };
@@ -90,6 +91,8 @@
 		3ADDF5F21DEDBF3900EDFC97 /* CBGMusic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBGMusic.m; sourceTree = "<group>"; };
 		3ADDF5F41DEDBF6E00EDFC97 /* CBGPlayMusicTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBGPlayMusicTool.h; sourceTree = "<group>"; };
 		3ADDF5F51DEDBF6E00EDFC97 /* CBGPlayMusicTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBGPlayMusicTool.m; sourceTree = "<group>"; };
+		3AE229101E67FCE100D5E842 /* CBGBlurView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBGBlurView.h; sourceTree = "<group>"; };
+		3AE229111E67FCE100D5E842 /* CBGBlurView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBGBlurView.m; sourceTree = "<group>"; };
 		3AE4BADD1E52D5120093A371 /* CBGAnimationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CBGAnimationView.h; path = "../../Player-播放器/View/CBGAnimationView.h"; sourceTree = "<group>"; };
 		3AE4BADE1E52D5120093A371 /* CBGAnimationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CBGAnimationView.m; path = "../../Player-播放器/View/CBGAnimationView.m"; sourceTree = "<group>"; };
 		3AE4BAE01E52E9830093A371 /* CBGLoveMusicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBGLoveMusicCell.h; sourceTree = "<group>"; };
@@ -251,6 +254,8 @@
 			children = (
 				3AE4BADD1E52D5120093A371 /* CBGAnimationView.h */,
 				3AE4BADE1E52D5120093A371 /* CBGAnimationView.m */,
+				3AE229101E67FCE100D5E842 /* CBGBlurView.h */,
+				3AE229111E67FCE100D5E842 /* CBGBlurView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -523,6 +528,7 @@
 				3ADDF5F61DEDBF6E00EDFC97 /* CBGPlayMusicTool.m in Sources */,
 				3AE4BAE81E52F5110093A371 /* CBGLrcCell.m in Sources */,
 				3ADDF59E1DED9AC500EDFC97 /* UIView+CBGExtension.m in Sources */,
+				3AE229121E67FCE100D5E842 /* CBGBlurView.m in Sources */,
 				3AF6B3071E4C345C00793430 /* CBGLrcView.m in Sources */,
 				3ADDF5601DED899200EDFC97 /* AppDelegate.m in Sources */,
 				3AE4BAE51E52E9830093A371 /* CBGLoveMusicView.m in Sources */,
