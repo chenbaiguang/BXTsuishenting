@@ -117,7 +117,7 @@
     // 网络状态发生变化会进入 Block
     [self.manager setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
 
-        // 1.有网络情况下，已经播放过歌曲
+        // 1.在有网络情况下，已经播放过歌曲
         if(weakSelf.playMusicTool.player.currentItem)
         {
             // 1.1.网络突然断开
@@ -149,6 +149,7 @@
     
     if(NULLString(playingMusic.icon)){
         [self.circularBtn setImage:nil forState:UIControlStateNormal];
+        self.lrcView.lockImage = [UIImage imageNamed:@"noArt"];
     }else{
         // 2.设置界面信息
         [self.circularBtn.imageView sd_setImageWithURL:[NSURL URLWithString:playingMusic.icon]
@@ -156,19 +157,6 @@
                                          completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL){
         [self.circularBtn setImage:image forState:UIControlStateNormal];
                                              self.lrcView.lockImage = image;
-//        switch (cacheType) {
-//                    case SDImageCacheTypeNone:
-//                        NSLog(@"直接下载");
-//                        break;
-//                    case SDImageCacheTypeDisk:
-//                        NSLog(@"磁盘缓存");
-//                        break;
-//                    case SDImageCacheTypeMemory:
-//                        NSLog(@"内存缓存");
-//                        break;
-//                    default:
-//                        break;
-//                }
         }];
     }
     
@@ -215,7 +203,6 @@
 }
 
 #pragma mark ============================ 通知－歌曲播完完毕 ============================
-
 
 - (void)playbackFinished{
     [self nextMusic];
@@ -432,6 +419,26 @@
     [self startPlayingMusic];
 }
 
+- (void)previousMusic
+{
+    if(noNetwork){
+        NSLog(@"网络出现问题啦～切换不了歌曲");
+        return;
+    }
+    
+    // 0.移除播放完毕观察者
+    [CBGNoteCenter removeObserver:self];
+    
+    // 1.取出上一首播放歌曲
+    CBGMusic *previousMusic = [CBGMusicTool previousMusic];
+    
+    // 2.修改当前播放歌曲
+    [CBGMusicTool setPlayingMusic: previousMusic];
+    
+    // 3.开始播放歌曲
+    [self startPlayingMusic];
+}
+
 #pragma mark ============================ loveMusicView 代理方法 ============================
 
 #pragma mark - 数据源代理
@@ -547,7 +554,7 @@
             break;
             
         case UIEventSubtypeRemoteControlPreviousTrack:
-//            [self previous];
+            [self previousMusic];
             break;
             
         default:
