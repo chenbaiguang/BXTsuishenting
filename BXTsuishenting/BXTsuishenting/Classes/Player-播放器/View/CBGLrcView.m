@@ -159,7 +159,7 @@
 
     }else{
         if(indexPath.row == 2){
-            cell.lrcLabel.text = @"歌词还没找到～";
+            cell.lrcLabel.text = @"歌词还没找到";
             cell.lrcLabel.textColor = CBGRGBColor(128, 128, 128, 0.5);
         }else{
             cell.lrcLabel.text = @"   ";

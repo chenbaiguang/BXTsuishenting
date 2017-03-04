@@ -128,10 +128,14 @@
         {
             // 1.1.网络突然断开
             if(noNetwork){
-                weakSelf.isPlaying = NO;}
+                weakSelf.isPlaying = NO;
+                [weakSelf noNetworkView:YES];
+            }
             // 1.2.网络连接上
             else{
-                weakSelf.isPlaying = YES;}
+                weakSelf.isPlaying = YES;
+                [weakSelf noNetworkView:NO];
+            }
             
             // 1.3.更新播放信息
             [weakSelf setAlphaImage];
@@ -143,8 +147,19 @@
             if(!weakSelf.playMusicTool.player.currentItem)
                 [weakSelf startPlayingMusic];
     }] ;
-    
 }
+
+#pragma mark - 断网 View 处理
+- (void)noNetworkView:(BOOL)isView
+{
+    if(isView){
+        [CBGBlurView show:self.view];
+        [CBGNoNetwork show];}
+    else{
+        [CBGBlurView hide];
+        [CBGNoNetwork hide];}
+}
+
 
 #pragma mark ============================ 开始播放音乐 ============================
 
