@@ -190,8 +190,8 @@
     
     // 4.设置歌词
     if(!NULLString(playingMusic.lrcurl)){
-        // 直接使用“服务器本来返回的数据”，不做任何解析
         _afnManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+        
         [_afnManager GET:playingMusic.lrcurl parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
     
         NSString *lrcString =  [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
@@ -261,8 +261,6 @@
 {
     // 1.设置当前的播放时间
     self.currentTime = CMTimeGetSeconds(self.playMusicTool.player.currentTime);
-    
-//    NSLog(@"%f ----  %f",self.currentTime,self.totalTime);
     
     // 2.更新进度条
     self.progressView.progress = self.currentTime / self.totalTime;
@@ -377,7 +375,6 @@
     
     // 4.将当前的歌曲添加／删除 MusicTool 数组中
     [CBGMusicTool setLoveMusics];
-
 }
 
 - (void)setLoveBtnImage:(BOOL)loveMusic

@@ -217,7 +217,9 @@
     _currentTime = currentTime;
     
     // 更新锁屏界面信息
-    [self setupLockScreenInfoWithLockImage:self.lockImage];
+    if(self.lockImage){
+        [self setupLockScreenInfoWithLockImage:self.lockImage];}
+        
     
     // 用当前时间和歌词进行匹配
     if(self.lrclist.count != 0){

@@ -11,15 +11,4 @@
 @implementation CBGMusic
 
 
-//-(void)setLoveMusic:(BOOL)loveMusic
-//{
-//    if(_loveMusic == 0)
-//        _loveMusic = NO;
-//    
-//    
-//    
-//}
-
-
-
 @end
