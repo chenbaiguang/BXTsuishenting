@@ -62,7 +62,7 @@
     }];
     
     UILabel *label3 = [[UILabel alloc] init];
-    label3.text = @"向下拉关闭提示";
+    label3.text = @"向下拉关闭提示（未做）";
     label3.textAlignment = NSTextAlignmentCenter;
     label3.font = [UIFont systemFontOfSize:16 * kScreenHeightScale];
     label3.textColor = CBGRGBColor(128, 128, 128, 1);
