@@ -13,7 +13,6 @@
 #import "CBGLoveMusicView.h"
 #import "UIImageView+WebCache.h"
 
-
 #import "CBGLoveMusicCell.h"
 
 #import "CBGBlurView.h"
@@ -105,7 +104,7 @@
     self.afnManager = [AFHTTPSessionManager manager];
     self.manager= [AFNetworkReachabilityManager manager];
     
-    // 1.设置界面UI
+    // 1.设置界面UI（该过程能抽出放置 一个view文件中）
     [self setup];
     
     // 2.开始网络监测
@@ -138,7 +137,7 @@
             }
             
             // 1.3.更新播放信息
-            [weakSelf setAlphaImage];
+            [weakSelf setAlphaImageTimer];
         }
         
         
@@ -168,62 +167,62 @@
     // 1.取出当前播放歌曲
     CBGMusic *playingMusic = [CBGMusicTool playingMusic];
     
+    // 2.设置界面信息
+    // 2.1.设置歌名／歌手
+    self.lrcView.songName = playingMusic.name;
+    self.lrcView.singerName = playingMusic.singer;
+    
+    // 2.2.设置圆形图片
     if(NULLString(playingMusic.icon)){
         [self.circularBtn setImage:nil forState:UIControlStateNormal];
         self.lrcView.lockImage = [UIImage imageNamed:@"noArt"];
     }else{
-        // 2.设置界面信息
         [self.circularBtn.imageView sd_setImageWithURL:[NSURL URLWithString:playingMusic.icon]
                                   placeholderImage:[UIImage imageNamed:@"noArt"]
+                                               options:SDWebImageRetryFailed|SDWebImageLowPriority
                                          completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL){
+                                             
         [self.circularBtn setImage:image forState:UIControlStateNormal];
                                              self.lrcView.lockImage = image;
         }];
     }
-    
-    self.lrcView.songName = playingMusic.name;
-    self.lrcView.singerName = playingMusic.singer;
 
+    // 2.3.设置歌词
+    if(!NULLString(playingMusic.lrcurl)){
+        _afnManager.responseSerializer = [AFHTTPResponseSerializer serializer];
+        _afnManager.completionQueue = dispatch_get_global_queue(0, 0);
+        
+        [_afnManager GET:playingMusic.lrcurl parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            
+        NSString *lrcString =  [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.lrcView.lrcName = lrcString;});
+            
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        }];}
+    else{
+        self.lrcView.lrcName = @"    ";
+    }
+    
     // 3.开始播放歌曲
     [self.playMusicTool playMusicWithURL:playingMusic.url];
     self.isPlaying = YES;
     
-    // 4.设置歌词
-    if(!NULLString(playingMusic.lrcurl)){
-        _afnManager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        
-        [_afnManager GET:playingMusic.lrcurl parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-    
-        NSString *lrcString =  [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-        self.lrcView.lrcName = lrcString;
-            
-        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-            NSLog(@"请求失败---%@", error);
-        }];
-    }else{
-        self.lrcView.lrcName = @"    ";
-    }
-    
+    // 4.获取歌曲总时长
     self.totalTime = CMTimeGetSeconds(self.playMusicTool.player.currentItem.asset.duration);
     self.lrcView.duration = self.totalTime;
     
-    // 5.添加定时器用户更新进度界面
-    [self removeProgressTimer];
-    [self addProgressTimer];
-    [self removeLrcTimer];
-    [self addLrcTimer];
-    
-    // 6.添加通知，监听歌曲播放完毕
+    // 5.添加通知，监听歌曲播放完毕
     [CBGNoteCenter addObserver:self selector:@selector(playbackFinished) name:AVPlayerItemDidPlayToEndTimeNotification object:self.playMusicTool.player.currentItem];
     
-    // 7.更新界面透明度和按钮图片
-    [self setAlphaImage];
+    // 6.更新界面透明度和按钮图片／定时器
+    [self setAlphaImageTimer];
     
-    // 8.更新爱心按钮图片
+    // 7.更新爱心按钮图片
     [self setLoveBtnImage:playingMusic.loveMusic];
 }
 
-#pragma mark ============================ 通知－歌曲播完完毕 ============================
+#pragma mark ============================ 通知－歌曲播放完毕 ============================
 
 - (void)playbackFinished{
     [self nextMusic];
@@ -328,10 +327,10 @@
     self.isPlaying = !self.isPlaying;
     
     // 1.设置透明度和按钮图片
-    [self setAlphaImage];
+    [self setAlphaImageTimer];
 }
 
-- (void)setAlphaImage
+- (void)setAlphaImageTimer
 {
     // 1.设置圆形按钮／歌词view 透明度
     CGFloat alphaValue;
@@ -426,16 +425,21 @@
         return;
     }
     
-    // 0.移除播放完毕观察者
-    [CBGNoteCenter removeObserver:self];
+    // 0.暂停当前音乐播放
+    [self.playMusicTool pauseCurrentMusic];
     
-    // 1.取出下一首播放歌曲
+    // 1.移除播放完毕通知/ 定时器
+    [CBGNoteCenter removeObserver:self];
+    [self removeProgressTimer];
+    [self removeLrcTimer];
+    
+    // 2.取出下一首播放歌曲
     CBGMusic *nextMusic = [CBGMusicTool nextMusic];
     
-    // 2.修改当前播放歌曲
+    // 3.修改当前播放歌曲
     [CBGMusicTool setPlayingMusic: nextMusic];
     
-    // 3.开始播放歌曲
+    // 4.开始播放歌曲
     [self startPlayingMusic];
 }
 
@@ -446,16 +450,24 @@
         return;
     }
     
-    // 0.移除播放完毕观察者
+    // 0.暂停当前音乐播放
+    [self.playMusicTool pauseCurrentMusic];
+    
+    // 1.移除播放完毕通知/ 定时器
+    [CBGNoteCenter removeObserver:self];
+    [self removeProgressTimer];
+    [self removeLrcTimer];
+    
+    // 2.移除播放完毕观察者
     [CBGNoteCenter removeObserver:self];
     
-    // 1.取出上一首播放歌曲
+    // 3.取出上一首播放歌曲
     CBGMusic *previousMusic = [CBGMusicTool previousMusic];
     
-    // 2.修改当前播放歌曲
+    // 4.修改当前播放歌曲
     [CBGMusicTool setPlayingMusic: previousMusic];
     
-    // 3.开始播放歌曲
+    // 5.开始播放歌曲
     [self startPlayingMusic];
 }
 
@@ -500,6 +512,8 @@
     return cell;
 }
 
+#pragma mark - 歌词 tableView 头部
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     return (60 * kScreenHeightScale);
@@ -526,20 +540,27 @@
 #pragma mark - 监听事件代理
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // 0.移除播放完毕观察者
-    [CBGNoteCenter removeObserver:self];
+    // 0.取出当前的歌曲
+    CBGMusic *playingMusic = [CBGMusicTool playingMusic];
     
     // 1.取出喜欢的歌曲
     CBGMusic *loveMusic = [CBGMusicTool loveMusics][indexPath.row];
     
-    // 2.修改当前播放歌曲
+    // 2.同一首歌曲不切换
+    if(playingMusic == loveMusic)
+        return;
+    
+    // 3.移除播放完毕观察者
+    [CBGNoteCenter removeObserver:self];
+    
+    // 4.修改当前播放歌曲
     [CBGMusicTool setPlayingMusic: loveMusic];
     
-    // 3.开始播放歌曲
-    [self startPlayingMusic];
-    
-    // 4. loveMusicView 消失
+    // 5. loveMusicView 消失
     [self tap:nil];
+    
+    // 6.开始播放歌曲
+    [self startPlayingMusic];
 }
 
 #pragma mark ============================ 手势处理 ============================

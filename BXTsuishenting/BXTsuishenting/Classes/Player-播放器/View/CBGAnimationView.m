@@ -27,7 +27,7 @@
     imageView.image = [menu imageWithView:imageView with:view];
     [menu addSubview:imageView];
     
-    [UIView animateWithDuration:1 animations:^{
+    [UIView animateWithDuration:0.7 animations:^{
         
         CGAffineTransform transform = CGAffineTransformIdentity;
         
@@ -46,7 +46,8 @@
 - (UIImage *)imageWithView:(UIView *)image with:(UIView *)inView{
 
     UIImage *img;
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(image.bounds.size.width, image.bounds.size.height), YES, 0.0);
+//    UIGraphicsBeginImageContextWithOptions(CGSizeMake(image.bounds.size.width, image.bounds.size.height), YES, 0.0);
+    UIGraphicsBeginImageContext(CGSizeMake(image.bounds.size.width, image.bounds.size.height));
     [inView.layer renderInContext:UIGraphicsGetCurrentContext()];
     img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
