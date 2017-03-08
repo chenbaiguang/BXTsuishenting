@@ -12,7 +12,7 @@
 /** 播放器播放状态 */
 static BOOL isPlaying;
 
-@interface  CBGPlayMusicTool : NSObject
+@interface  CBGPlayMusicTool : NSObject< NSCopying, NSMutableCopying>
 
 /** 播放器 */
 @property (nonatomic, strong) AVPlayer *player;

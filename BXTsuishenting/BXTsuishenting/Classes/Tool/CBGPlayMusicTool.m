@@ -8,7 +8,8 @@
 
 #import "CBGPlayMusicTool.h"
 
-static CBGPlayMusicTool *player;
+// 0.提供全局变量
+static CBGPlayMusicTool *_player;
 
 @interface CBGPlayMusicTool()
 
@@ -22,14 +23,24 @@ static CBGPlayMusicTool *player;
 
 #pragma mark ============================ 单例初始化播放器 ============================
 
-+ (instancetype)sharedPlayMusicTool
+// 1.alloc ---> allocWithZone ( 这份资源初始化一次)
++ (instancetype)allocWithZone:(struct _NSZone *)zone
 {
+    // 1.1.在多线程情况下访问,同一资源会有安全隐患
+    // 1.2.使用互斥锁 @synchronized
+//    @synchronized (self) {
+//        if(player == nil){
+//            player = [super allocWithZone:zone];
+//        }
+//    }
+    
+    // 1.3.使用 GCD,本身就是线程安全的
     static dispatch_once_t once_Token;
     dispatch_once(&once_Token, ^{
         
-        player = [[CBGPlayMusicTool alloc] init];
+        _player = [super allocWithZone:zone];
     });
-    return player;
+    return _player;
 }
 
 #pragma mark -- 初始化方法(仅运行一次)
@@ -48,6 +59,24 @@ static CBGPlayMusicTool *player;
     return self;
 }
 
+
+// 2.提供类方法（方便外界访问和辨识单列）
++ (instancetype)sharedPlayMusicTool
+{
+    return [[self alloc] init];
+}
+
+
+// 3.严谨起见(copy,mutableCopy)
+-(id)copyWithZone:(NSZone *)zone
+{
+    return _player;
+}
+
+- (id)mutableCopyWithZone:(NSZone *)zone
+{
+    return _player;
+}
 
 #pragma mark ============================ 播放/暂停音乐的方法 ============================
 #pragma mark -- 播放音乐
