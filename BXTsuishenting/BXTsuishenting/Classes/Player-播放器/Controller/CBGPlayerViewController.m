@@ -186,17 +186,15 @@
                                              self.lrcView.lockImage = image;
         }];
     }
-
+    
     // 2.3.设置歌词
     if(!NULLString(playingMusic.lrcurl)){
         _afnManager.responseSerializer = [AFHTTPResponseSerializer serializer];
-        _afnManager.completionQueue = dispatch_get_global_queue(0, 0);
         
         [_afnManager GET:playingMusic.lrcurl parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-            
+
         NSString *lrcString =  [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.lrcView.lrcName = lrcString;});
+        self.lrcView.lrcName = lrcString;
             
         } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         }];}

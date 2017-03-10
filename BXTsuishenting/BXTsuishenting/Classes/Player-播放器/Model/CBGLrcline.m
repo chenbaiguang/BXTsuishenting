@@ -29,7 +29,7 @@
 #pragma mark - 私有方法
 - (NSTimeInterval)timeStringWithString:(NSString *)timeString
 {
-    // 01:05.43
+    // 00:03.16
     NSInteger min = [[timeString componentsSeparatedByString:@":"][0] integerValue];
     NSInteger second = [[timeString substringWithRange:NSMakeRange(3, 2)] integerValue];
     NSInteger haomiao = [[timeString componentsSeparatedByString:@"."][1] integerValue];
